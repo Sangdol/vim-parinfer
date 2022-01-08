@@ -29,7 +29,7 @@ function! g:Select_full_form()
   let full_form_delimiters = delims['parens']
 
   "search backward for a ( on first col. Do not move the cursor
-  let topline = search('^(', 'bn') 
+  let topline = search('^(', 'bn')
 
   if topline == 0
     let topline = search('^{', 'bn')
@@ -62,9 +62,9 @@ function! g:Select_full_form()
   " temp, set cursor to form start
   call setpos('.', [0, topline, 1, 0])
 
-  " next paren match 
+  " next paren match
   " only usable when parens are balanced
-  let matchline = searchpair(full_form_delimiters['left'],'',full_form_delimiters['right'], 'nW') 
+  let matchline = searchpair(full_form_delimiters['left'],'',full_form_delimiters['right'], 'nW')
 
   let bottomline = search('^' . full_form_delimiters['left'], 'nW') - 1
 
@@ -77,12 +77,12 @@ function! g:Select_full_form()
   let lines = getline(topline, bottomline)
   let section = join(lines, "\n")
   return [topline, bottomline, section]
-  
+
 endfunction
 
 function! parinfer#draw(res, top, bottom)
   let lines = split(a:res, "\n")
-  let counter = a:top 
+  let counter = a:top
   for line in lines
     call setline(counter, line)
     let counter += 1
@@ -152,7 +152,7 @@ function! parinfer#del_char()
 
   if mark <= 0
     let newline = line[1:len(line) - 1]
-  elseif 
+  elseif
     let start = line[0:mark]
     let end = line[row:len(line)]
     let newline = start . end
@@ -170,15 +170,15 @@ function! parinfer#ToggleParinferMode()
   endif
 endfunction
 
-com! -bar ToggleParinferMode cal parinfer#ToggleParinferMode() 
+com! -bar ToggleParinferMode cal parinfer#ToggleParinferMode()
 
 augroup parinfer
   autocmd!
   execute "autocmd InsertLeave " . join(g:vim_parinfer_globs, ",") . " call parinfer#process_form()"
-  execute "autocmd FileType " . join(g:vim_parinfer_filetypes, ",") . " nnoremap <buffer> <Tab> :call parinfer#do_indent()<cr>"
-  execute "autocmd FileType " . join(g:vim_parinfer_filetypes, ",") . " nnoremap <buffer> <S-Tab> :call parinfer#do_undent()<cr>"
-  execute "autocmd FileType " . join(g:vim_parinfer_filetypes, ",") . " vnoremap <buffer> <Tab> :call parinfer#do_indent()<cr>"
-  execute "autocmd FileType " . join(g:vim_parinfer_filetypes, ",") . " vnoremap <buffer> <S-Tab> :call parinfer#do_undent()<cr>"
+  execute "autocmd FileType " . join(g:vim_parinfer_filetypes, ",") . " nnoremap <buffer> <C-l> :call parinfer#do_indent()<cr>"
+  execute "autocmd FileType " . join(g:vim_parinfer_filetypes, ",") . " nnoremap <buffer> <C-h> :call parinfer#do_undent()<cr>"
+  execute "autocmd FileType " . join(g:vim_parinfer_filetypes, ",") . " vnoremap <buffer> <C-l> :call parinfer#do_indent()<cr>"
+  execute "autocmd FileType " . join(g:vim_parinfer_filetypes, ",") . " vnoremap <buffer> <C-h> :call parinfer#do_undent()<cr>"
 
   if exists('##TextChangedI')
     execute "autocmd TextChangedI " . join(g:vim_parinfer_globs, ",") . " call parinfer#process_form_insert()"
